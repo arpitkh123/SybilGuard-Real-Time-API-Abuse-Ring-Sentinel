@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SybilGuard Command Center</title>
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom scrollbar for the live traffic feed */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #1f2937; }
+        ::-webkit-scrollbar-thumb { background: #4b5563; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #6b7280; }
+        .fade-in { animation: fadeIn 0.3s ease-in; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body class="bg-gray-950 text-gray-100 font-sans min-h-screen p-6">
+
+    <!-- Header -->
+    <header class="flex justify-between items-center mb-8 border-b border-gray-800 pb-4">
+        <div>
+            <h1 class="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-teal-400">
+                SybilGuard Sentinel
+            </h1>
+            <p class="text-gray-400 text-sm mt-1">Real-Time API Abuse-Ring Mitigation Engine</p>
+        </div>
+        <div class="flex items-center space-x-3">
+            <span class="relative flex h-3 w-3">
+              <span id="status-ping" class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span id="status-dot" class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
+            </span>
+            <span id="status-text" class="text-emerald-400 font-mono text-sm">System Online (Listening)</span>
+        </div>
+    </header>
+
+    <!-- Metrics Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <!-- Metric 1 -->
+        <div class="bg-gray-900 border border-gray-800 rounded-xl p-5 shadow-lg">
+            <h3 class="text-gray-400 font-semibold mb-2">Total Requests Analyzed</h3>
+            <p class="text-4xl font-mono text-blue-400" id="metric-total">0</p>
+        </div>
+        <!-- Metric 2 -->
+        <div class="bg-gray-900 border border-gray-800 rounded-xl p-5 shadow-lg relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-16 h-16 bg-red-500/10 rounded-bl-full"></div>
+            <h3 class="text-gray-400 font-semibold mb-2">Botnet Attacks Blocked</h3>
+            <p class="text-4xl font-mono text-red-400" id="metric-blocked">0</p>
+        </div>
+        <!-- Metric 3 -->
+        <div class="bg-gray-900 border border-gray-800 rounded-xl p-5 shadow-lg relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-16 h-16 bg-emerald-500/10 rounded-bl-full"></div>
+            <h3 class="text-gray-400 font-semibold mb-2">Net Savings (INR)</h3>
+            <p class="text-4xl font-mono text-emerald-400" id="metric-savings">₹ 0</p>
+            <p class="text-xs text-gray-500 mt-1">Calculated via False-Positive vs Fraud Delta</p>
+        </div>
+    </div>
+
+    <!-- Live Traffic Feed -->
+    <div class="bg-gray-900 border border-gray-800 rounded-xl shadow-lg overflow-hidden">
+        <div class="px-6 py-4 border-b border-gray-800 bg-gray-900/50">
+            <h2 class="text-lg font-semibold text-gray-200">Live Traffic Evaluation Stream</h2>
+        </div>
+        <div class="h-96 overflow-y-auto p-0" id="traffic-container">
+            <table class="w-full text-left border-collapse">
+                <thead class="sticky top-0 bg-gray-900 border-b border-gray-800 text-gray-400 text-sm">
+                    <tr>
+                        <th class="py-3 px-6 font-medium">Txn ID</th>
+                        <th class="py-3 px-6 font-medium">Anomaly Score</th>
+                        <th class="py-3 px-6 font-medium">ML Decision</th>
+                        <th class="py-3 px-6 font-medium">Action Taken</th>
+                    </tr>
+                </thead>
+                <tbody id="traffic-table-body" class="text-sm font-mono text-gray-300">
+                    <!-- Data will be injected here via WebSocket -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- WebSocket Logic -->
+    <script>
+        const ws = new WebSocket("ws://127.0.0.1:8000/ws/dashboard");
+        
+        let totalRequests = 0;
+        let totalBlocked = 0;
+        let moneySaved = 0;
+
+        ws.onopen = function() {
+            document.getElementById('status-text').innerText = "System Online (Listening)";
+            document.getElementById('status-text').className = "text-emerald-400 font-mono text-sm";
+            document.getElementById('status-ping').classList.remove("hidden");
+            document.getElementById('status-dot').className = "relative inline-flex rounded-full h-3 w-3 bg-emerald-500";
+        };
+
+        ws.onclose = function() {
+            document.getElementById('status-text').innerText = "System Offline (Disconnected)";
+            document.getElementById('status-text').className = "text-red-500 font-mono text-sm font-bold";
+            document.getElementById('status-ping').classList.add("hidden"); // Kills the ping animation
+            document.getElementById('status-dot').className = "relative inline-flex rounded-full h-3 w-3 bg-red-600";
+        };
+
+        ws.onmessage = function(event) {
+            const data = JSON.parse(event.data);
+            
+            // Update Metrics
+            totalRequests++;
+            document.getElementById('metric-total').innerText = totalRequests;
+            
+            if (data.mitigation_action === 'BLOCK_IP') {
+                totalBlocked++;
+                moneySaved += 1500; // Mock value from config
+                document.getElementById('metric-blocked').innerText = totalBlocked;
+                document.getElementById('metric-savings').innerText = `₹ ${moneySaved.toLocaleString()}`;
+            }
+
+            // Create Table Row
+            const tbody = document.getElementById('traffic-table-body');
+            const row = document.createElement('tr');
+            row.className = "border-b border-gray-800 hover:bg-gray-800/50 transition-colors fade-in";
+            
+            const isAnomalous = data.is_anomalous;
+            const statusColor = isAnomalous ? 'text-red-400 bg-red-400/10' : 'text-emerald-400 bg-emerald-400/10';
+            const statusText = isAnomalous ? 'ANOMALY DETECTED' : 'NORMAL';
+            
+            row.innerHTML = `
+                <td class="py-3 px-6">${data.transaction_id}</td>
+                <td class="py-3 px-6">${data.anomaly_score.toFixed(3)}</td>
+                <td class="py-3 px-6">
+                    <span class="px-2 py-1 rounded text-xs font-bold ${statusColor}">
+                        ${statusText}
+                    </span>
+                </td>
+                <td class="py-3 px-6 ${isAnomalous ? 'text-red-400' : 'text-gray-400'}">
+                    ${data.mitigation_action}
+                </td>
+            `;
+            
+            // Prepend so newest is on top
+            tbody.insertBefore(row, tbody.firstChild);
+            
+            // Keep only the latest 50 rows to prevent browser lag
+            if (tbody.children.length > 50) {
+                tbody.removeChild(tbody.lastChild);
+            }
+        };
+
+        ws.onerror = function(error) {
+            console.error("WebSocket Error: ", error);
+        };
+    </script>
+</body>
+</html>
