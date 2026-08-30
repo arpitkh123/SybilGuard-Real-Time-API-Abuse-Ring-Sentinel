@@ -27,11 +27,11 @@ export default function Sidebar({ activeTab, setActiveTab, isConnected, onReset 
           <div className="pt-4 pb-2">
             <p className="text-[10px] uppercase tracking-wider text-slate-500 px-4 font-semibold">Infrastructure</p>
           </div>
-          <button className="w-full flex items-center space-x-3 px-4 py-2.5 rounded-lg text-slate-400 hover:bg-slate-800/50 hover:text-slate-200 transition-colors opacity-70">
+          <button onClick={() => setActiveTab('map')} className={`w-full flex items-center space-x-3 px-4 py-2.5 rounded-lg transition-all duration-200 ${activeTab === 'map' ? 'bg-violet-500/10 text-violet-300 border border-violet-500/20 shadow-inner' : 'text-slate-400 hover:bg-slate-800/50 hover:text-slate-200'}`}>
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
             <span className="font-medium text-sm">Global Threat Map</span>
           </button>
-          <button className="w-full flex items-center space-x-3 px-4 py-2.5 rounded-lg text-slate-400 hover:bg-slate-800/50 hover:text-slate-200 transition-colors opacity-70">
+          <button onClick={() => setActiveTab('integrations')} className={`w-full flex items-center space-x-3 px-4 py-2.5 rounded-lg transition-all duration-200 ${activeTab === 'integrations' ? 'bg-violet-500/10 text-violet-300 border border-violet-500/20 shadow-inner' : 'text-slate-400 hover:bg-slate-800/50 hover:text-slate-200'}`}>
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>
             <span className="font-medium text-sm">API Integrations</span>
           </button>
