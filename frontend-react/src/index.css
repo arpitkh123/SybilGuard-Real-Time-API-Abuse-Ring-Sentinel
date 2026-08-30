@@ -1,7 +1,43 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap');
 @import "tailwindcss";
 
-/* Custom scrollbar for the data table */
+/* Apply the new modern fonts */
+body {
+  font-family: 'Outfit', sans-serif;
+  background-color: #020617; /* tailwind slate-950 */
+}
+
+.font-mono {
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* Custom scrollbar */
 ::-webkit-scrollbar { width: 8px; }
-::-webkit-scrollbar-track { background: #1f2937; }
-::-webkit-scrollbar-thumb { background: #4b5563; border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { background: #6b7280; }
+::-webkit-scrollbar-track { background: #0f172a; }
+::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #475569; }
+
+/* Magic Print CSS for the PDF Export */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  #printable-report, #printable-report * {
+    visibility: visible;
+  }
+  #printable-report {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    color: black !important;
+  }
+  /* Remove dark backgrounds for clean printing */
+  .bg-slate-900, .bg-slate-950 {
+    background-color: white !important;
+    border: none !important;
+  }
+  .text-slate-400, .text-slate-300, .text-slate-100 {
+    color: black !important;
+  }
+}
