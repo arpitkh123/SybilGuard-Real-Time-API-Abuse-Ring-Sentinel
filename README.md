@@ -1,6 +1,7 @@
 # 🛡️ SybilGuard: Real-Time API Abuse-Ring Sentinel
 
-**Razorpay AI Buildathon | Track 02: AI Risk Manager,**  **Author:** Arpit Khandelwal
+**Razorpay AI Buildathon | Track 02: AI Risk Manager,**  
+**Author:** Arpit Khandelwal
 
 > **SybilGuard** is an autonomous, network-layer AI risk manager designed to detect, explain, and mitigate coordinated card-testing botnets in real-time, enforcing strict bounded defense protocols to maximize merchant revenue.
 
@@ -76,8 +77,34 @@ Click the http://localhost:5173/ link in your terminal to open the dashboard.
 * Watch the graph drop, the threat map populate, and the XAI audit trail log the mitigated threats!
 
 ---
+## 🐳 Deployment (Docker Quickstart)
 
-## 🚨 What Broke at 2 AM (And How We Fixed It)
+The entire application has been containerized for production-grade orchestration. You do not need to install Node or Python locally to run this.
+
+### 1. Build and Launch
+Ensure Docker Desktop is running on your machine. Open a terminal in the root folder (`SybilGuard-Real-Time-API-Abuse-Ring-Sentinel`) and run:
+```text
+docker-compose up --build -d
+Note: The -d flag runs the containers in the background.
+```
+### 2. Access the Dashboard
+Once the build is complete, the React frontend is served via Nginx and the backend WebSocket server is fully linked.
+```text
+Open your browser and navigate to: http://localhost
+```
+### 3. Run the Simulation
+* Ensure the dashboard says **"WebSocket: Connected"** in the bottom left.
+* Click the red **"⚡ Simulate Attack Spike"** button in the top right to unleash a simulated botnet attack.
+* Watch the graph drop, the threat map populate, and the XAI audit trail log the mitigated threats!
+
+### 4. Shut Down
+To stop the containers and clean up your terminal, run:
+```text
+docker-compose down
+```
+---
+
+## 🚨 What Broke at 2 AM (And How I Fixed It)
 
 **The Problem:** At 2 AM, I finally got my live attack simulator working, but I hit a massive wall, my Isolation Forest model started blocking everything. Under the sheer volume of the botnet spike, the anomaly threshold skewed, and it began flagging legitimate simulated transactions as fraud.Technically, my model was becoming too sensitive to raw request volume. But from a business and product perspective, this is the ultimate sin in payments: a high false-positive rate. Blocking real customers just because a merchant is under attack causes catastrophic revenue loss and destroys trust. Security is useless if it kills checkout conversion rates.
 
