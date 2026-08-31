@@ -16,7 +16,6 @@ function App() {
   const [selectedTxn, setSelectedTxn] = useState(null);
   const [showReportModal, setShowReportModal] = useState(false);
   
-  // NEW: State and Refs for the Stop Button functionality
   const [isSimulating, setIsSimulating] = useState(false);
   const attackWsRef = useRef(null);
   const attackTimeoutsRef = useRef([]);
@@ -70,25 +69,24 @@ function App() {
     setSelectedTxn(null);
   };
 
-  // START ATTACK SIMULATION
   const triggerUIBotnet = () => {
     if (isSimulating) return;
     setIsSimulating(true);
     
-    // Clear any leftover timeouts just in case
     attackTimeoutsRef.current = [];
-    
     const attackWs = new WebSocket("ws://127.0.0.1:8000/ws/traffic");
     attackWsRef.current = attackWs;
     
     attackWs.onopen = () => {
       for (let i = 0; i < 200; i++) {
-        // Slowed down slightly (every 30ms) so you have time to actually click STOP
         const timeoutId = setTimeout(() => {
           if (attackWs.readyState === WebSocket.OPEN) {
+            const randomIp = `10.0.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}`;
+            const randomAmount = Number((Math.random() * 99 + 1).toFixed(2));
+
             attackWs.send(JSON.stringify({
-              payment_payload: { transaction_id: `ui_bot_atk_${i}`, card_bin: "555555", amount: 1.0 },
-              network_telemetry: { ip_address: "10.0.0.99", asn: "AS666", user_agent: "curl", timestamp: new Date().toISOString() }
+              payment_payload: { transaction_id: `ui_bot_atk_${i}`, card_bin: "555555", amount: randomAmount },
+              network_telemetry: { ip_address: randomIp, asn: "AS666", user_agent: "curl", timestamp: new Date().toISOString() }
             }));
           }
         }, i * 30); 
@@ -103,13 +101,9 @@ function App() {
     };
   };
 
-  // STOP ATTACK INSTANTLY
   const stopSimulation = () => {
-    // Clear all pending network requests
     attackTimeoutsRef.current.forEach(clearTimeout);
     attackTimeoutsRef.current = [];
-    
-    // Close the attack socket
     if (attackWsRef.current) {
       attackWsRef.current.close();
     }
@@ -129,7 +123,6 @@ function App() {
       />
 
       <main className="flex-1 overflow-y-auto flex flex-col">
-        {/* Top Action Bar */}
         <div className="px-8 py-5 border-b border-slate-800 flex justify-between items-center bg-slate-900/40">
           <div>
             <h2 className="text-xl font-bold text-slate-100 tracking-tight">
@@ -141,8 +134,6 @@ function App() {
           </div>
           
           <div className="flex items-center space-x-3">
-            
-            {/* The Dynamic Attack / Stop Button */}
             {!isSimulating ? (
               <button 
                 onClick={triggerUIBotnet}
@@ -168,19 +159,19 @@ function App() {
           </div>
         </div>
 
-        {/* Dashboard View */}
         {activeTab === 'dashboard' && (
           <div className="p-8 space-y-6">
             <MetricsGrid stats={stats} />
-            
             <LiveChart traffic={traffic} />
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              {/* Live Traffic Feed */}
               <div className="lg:col-span-2 bg-slate-900 border border-slate-800 rounded-xl shadow-lg flex flex-col h-[430px]">
-                <div className="px-6 py-4 border-b border-slate-800 bg-slate-900/70 flex justify-between items-center">
+                
+                {/* THE TEXT IS REMOVED FROM THIS HEADER */}
+                <div className="px-6 py-4 border-b border-slate-800 bg-slate-900/70 flex items-center">
                   <h3 className="text-sm font-semibold text-slate-200">Live Traffic Evaluation Feed</h3>
                 </div>
+                
                 <div className="flex-1 overflow-y-auto">
                   <table className="w-full text-left border-collapse">
                     <thead className="sticky top-0 bg-slate-900 border-b border-slate-800 text-slate-400 text-xs">
@@ -211,7 +202,6 @@ function App() {
                 </div>
               </div>
 
-              {/* Active Quarantine Panel */}
               <div className="bg-slate-900 border border-slate-800 rounded-xl shadow-lg p-5 flex flex-col justify-between h-[430px]">
                 <div>
                   <div className="flex justify-between items-center pb-3 border-b border-slate-800">
@@ -242,7 +232,6 @@ function App() {
           </div>
         )}
 
-        {/* The Modular Tabs */}
         {activeTab === 'audit' && (
           <div className="p-8 h-full">
             <AuditTrail 
@@ -273,8 +262,8 @@ function App() {
           falsePositiveRate={falsePositiveRate}
           onClose={() => setShowReportModal(false)} 
         />
-      )}   
-     </div>
+      )}
+    </div>
   );
 }
 

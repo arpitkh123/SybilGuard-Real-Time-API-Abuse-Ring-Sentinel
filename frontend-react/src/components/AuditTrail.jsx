@@ -80,6 +80,8 @@ export default function AuditTrail({ traffic, selectedTxn, onSelectTxn }) {
         
         <div className="p-5 rounded-xl border border-slate-800 bg-slate-950 space-y-5 shadow-inner">
           <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Feature Vector Weights</h4>
+          
+          {/* Dynamic Jitter Bar */}
           <div>
             <div className="flex justify-between text-xs font-mono text-slate-400 mb-1.5">
               <span>Temporal Jitter Variance</span>
@@ -87,10 +89,19 @@ export default function AuditTrail({ traffic, selectedTxn, onSelectTxn }) {
                 {selectedTxn.is_anomalous ? 'ANOMALOUS (LOW)' : 'ORGANIC'}
               </span>
             </div>
-            <div className="w-full bg-slate-800 rounded-full h-2">
-              <div className={`h-2 rounded-full ${selectedTxn.is_anomalous ? 'bg-rose-500 w-[12%]' : 'bg-emerald-500 w-[80%]'}`}></div>
+            <div className="w-full bg-slate-800 rounded-full h-2 overflow-hidden">
+              <div 
+                className={`h-2 rounded-full transition-all duration-500 ${selectedTxn.is_anomalous ? 'bg-rose-500' : 'bg-emerald-500'}`}
+                style={{ 
+                  width: selectedTxn.is_anomalous 
+                    ? `${Math.max(5, Math.abs(selectedTxn.anomaly_score * 40))}%` 
+                    : `${Math.min(95, 60 + Math.abs(selectedTxn.anomaly_score * 30))}%` 
+                }}
+              ></div>
             </div>
           </div>
+
+          {/* Dynamic Velocity Bar */}
           <div>
             <div className="flex justify-between text-xs font-mono text-slate-400 mb-1.5">
               <span>ASN Request Velocity</span>
@@ -98,10 +109,18 @@ export default function AuditTrail({ traffic, selectedTxn, onSelectTxn }) {
                 {selectedTxn.is_anomalous ? 'SURGE DETECTED' : 'NORMAL'}
               </span>
             </div>
-            <div className="w-full bg-slate-800 rounded-full h-2">
-              <div className={`h-2 rounded-full ${selectedTxn.is_anomalous ? 'bg-rose-500 w-[92%]' : 'bg-emerald-500 w-[24%]'}`}></div>
+            <div className="w-full bg-slate-800 rounded-full h-2 overflow-hidden">
+              <div 
+                className={`h-2 rounded-full transition-all duration-500 ${selectedTxn.is_anomalous ? 'bg-rose-500' : 'bg-emerald-500'}`}
+                style={{ 
+                  width: selectedTxn.is_anomalous 
+                    ? `${Math.min(98, 80 + Math.abs(selectedTxn.anomaly_score * 20))}%` 
+                    : `${Math.max(15, 10 + Math.abs(selectedTxn.anomaly_score * 15))}%` 
+                }}
+              ></div>
             </div>
           </div>
+
         </div>
       </div>
     </div>
