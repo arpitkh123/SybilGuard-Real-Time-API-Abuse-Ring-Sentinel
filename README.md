@@ -1,6 +1,6 @@
 # 🛡️ SybilGuard: Real-Time API Abuse-Ring Sentinel
 
-**Razorpay AI Buildathon | Track 02: AI Risk Manager** **Author:** Arpit Khandelwal
+**Razorpay AI Buildathon | Track 02: AI Risk Manager,**  **Author:** Arpit Khandelwal
 
 > **SybilGuard** is an autonomous, network-layer AI risk manager designed to detect, explain, and mitigate coordinated card-testing botnets in real-time, enforcing strict bounded defense protocols to maximize merchant revenue.
 
@@ -55,6 +55,7 @@ cd SybilGuard-Real-Time-API-Abuse-Ring-Sentinel
 
 # Boot up the FastAPI WebSocket server
 uvicorn app.main:app --reload
+```
 
 ### 2. Start the React Dashboard
 ```bash
@@ -68,7 +69,7 @@ npm install
 npm run dev
 
 Click the http://localhost:5173/ link in your terminal to open the dashboard.
-
+```
 ### 3. Run the Simulation
 * Ensure the dashboard says **"WebSocket: Connected"** in the bottom left.
 * Click the red **"⚡ Simulate Attack Spike"** button in the top right to unleash a simulated botnet attack.
