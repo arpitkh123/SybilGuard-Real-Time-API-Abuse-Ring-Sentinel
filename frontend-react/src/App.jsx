@@ -180,7 +180,6 @@ function App() {
               <div className="lg:col-span-2 bg-slate-900 border border-slate-800 rounded-xl shadow-lg flex flex-col h-[430px]">
                 <div className="px-6 py-4 border-b border-slate-800 bg-slate-900/70 flex justify-between items-center">
                   <h3 className="text-sm font-semibold text-slate-200">Live Traffic Evaluation Feed</h3>
-                  <span className="text-xs text-slate-500 font-medium">Click entry for XAI breakdown</span>
                 </div>
                 <div className="flex-1 overflow-y-auto">
                   <table className="w-full text-left border-collapse">
@@ -267,8 +266,15 @@ function App() {
         )}
       </main>
 
-      {showReportModal && <ReportModal stats={stats} onClose={() => setShowReportModal(false)} />}
-    </div>
+      {showReportModal && (
+        <ReportModal 
+          stats={stats} 
+          traffic={traffic}
+          falsePositiveRate={falsePositiveRate}
+          onClose={() => setShowReportModal(false)} 
+        />
+      )}   
+     </div>
   );
 }
 
