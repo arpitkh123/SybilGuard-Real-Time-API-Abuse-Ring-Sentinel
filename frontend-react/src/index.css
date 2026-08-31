@@ -1,10 +1,15 @@
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap');
 @import "tailwindcss";
 
-/* Apply the new modern fonts */
+/* THIS SCALES UP THE ENTIRE UI (Default is usually 16px) */
+html {
+  font-size: 19px; 
+}
+
 body {
   font-family: 'Outfit', sans-serif;
-  background-color: #020617; /* tailwind slate-950 */
+  background-color: #020617;
+  color: #f8fafc;
 }
 
 .font-mono {
@@ -19,12 +24,9 @@ body {
 
 /* Magic Print CSS for the PDF Export */
 @media print {
-  body * {
-    visibility: hidden;
-  }
-  #printable-report, #printable-report * {
-    visibility: visible;
-  }
+  html { font-size: 14px; } /* Scale down slightly for A4 paper */
+  body * { visibility: hidden; }
+  #printable-report, #printable-report * { visibility: visible; }
   #printable-report {
     position: absolute;
     left: 0;
@@ -32,12 +34,18 @@ body {
     width: 100%;
     color: black !important;
   }
-  /* Remove dark backgrounds for clean printing */
-  .bg-slate-900, .bg-slate-950 {
-    background-color: white !important;
-    border: none !important;
+  
+  /* Force dark elements to turn white for clean printing */
+  .bg-slate-900, .bg-slate-950, .bg-slate-800 { 
+    background-color: white !important; 
+    border-color: #cbd5e1 !important; 
   }
-  .text-slate-400, .text-slate-300, .text-slate-100 {
-    color: black !important;
-  }
+  .text-slate-400, .text-slate-300, .text-slate-100 { color: #0f172a !important; }
+  
+  /* Retain brand colors for the printout */
+  .text-cyan-400 { color: #0284c7 !important; }
+  .text-rose-500 { color: #e11d48 !important; }
+  .text-emerald-400 { color: #059669 !important; }
+  .text-violet-400 { color: #6d28d9 !important; }
+  .shadow-inner, .shadow-lg { box-shadow: none !important; }
 }
