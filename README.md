@@ -1,6 +1,6 @@
 # 🛡️ SybilGuard: Real-Time API Abuse-Ring Sentinel
 
-**Razorpay AI Buildathon | Track 02: AI Risk Manager** **Author:** Arpit & Avi
+**Razorpay AI Buildathon | Track 02: AI Risk Manager** **Author:** Arpit Khandelwal
 
 > **SybilGuard** is an autonomous, network-layer AI risk manager designed to detect, explain, and mitigate coordinated card-testing botnets in real-time, enforcing strict bounded defense protocols to maximize merchant revenue.
 
